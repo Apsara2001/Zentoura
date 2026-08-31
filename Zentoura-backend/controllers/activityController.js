@@ -11,14 +11,17 @@ const getAllActivities = async (req, res, next) => {
         const limit = parseInt(req.query.limit) || 12;
         const offset = (page - 1) * limit;
 
-        const location = req.query.location || '';
+        const search = req.query.search || req.query.location || '';
         const category = req.query.category || '';
         const minRating = parseFloat(req.query.minRating) || 0;
 
         const whereClause = {};
 
-        if (location) {
-            whereClause.location = { [Op.like]: `%${location}%` };
+        if (search) {
+            whereClause[Op.or] = [
+                { name: { [Op.like]: `%${search}%` } },
+                { location: { [Op.like]: `%${search}%` } }
+            ];
         }
 
         if (category) {
@@ -32,13 +35,6 @@ const getAllActivities = async (req, res, next) => {
         const { count, rows } = await Activity.findAndCountAll({
             where: whereClause,
             distinct: true,
-            include: [
-                {
-                    model: Review,
-                    as: 'reviews',
-                    attributes: ['rating']
-                }
-            ],
             limit,
             offset,
             order: [['rating', 'DESC'], ['createdAt', 'DESC']]
@@ -49,10 +45,6 @@ const getAllActivities = async (req, res, next) => {
         // Use Promise.all with map to handle async translation for all items
         const data = await Promise.all(rows.map(async (activity) => {
             const plain = activity.get({ plain: true });
-            const reviews = plain.reviews || [];
-            const avg = reviews.length > 0
-                ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
-                : 0;
 
             if (language !== 'en') {
                 const [translatedName, translatedShortDesc, translatedFullDesc, translatedLocation, translatedCategory, translatedDifficulty] = await Promise.all([
@@ -72,7 +64,7 @@ const getAllActivities = async (req, res, next) => {
                     location: translatedLocation,
                     category: translatedCategory,
                     difficulty_level: translatedDifficulty,
-                    rating: parseFloat(avg),
+                    rating: parseFloat(plain.rating || 0),
                     originalLanguage: 'en',
                     displayLanguage: language
                 };
@@ -80,7 +72,7 @@ const getAllActivities = async (req, res, next) => {
 
             return {
                 ...plain,
-                rating: parseFloat(avg)
+                rating: parseFloat(plain.rating || 0)
             };
         }));
 
