@@ -5,6 +5,7 @@ import { FiMapPin, FiStar, FiArrowLeft, FiChevronDown, FiChevronUp } from 'react
 import axios, { IMAGE_BASE_URL } from '../api/axios';
 import Loader from '../components/Loader';
 import { useTranslation } from 'react-i18next';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 
 const PlaceDetails = () => {
@@ -19,11 +20,11 @@ const PlaceDetails = () => {
     const [showReviews, setShowReviews] = useState(false);
     const { t, i18n } = useTranslation();
 
-    // Backend handles translation now
-    const name = place?.name;
-    const location = place?.location;
-    const shortDesc = place?.short_description;
-    const fullDesc = place?.full_description;
+    // Dynamic translation for place content
+    const { translatedText: name } = useDynamicTranslation(place?.name);
+    const { translatedText: location } = useDynamicTranslation(place?.location);
+    const { translatedText: shortDesc } = useDynamicTranslation(place?.short_description);
+    const { translatedText: fullDesc } = useDynamicTranslation(place?.full_description);
 
     useEffect(() => {
         fetchPlaceDetails();

@@ -7,6 +7,7 @@ import { SkeletonList } from '../components/Loader';
 import { useTranslation } from 'react-i18next';
 
 import { useLanguage } from '../context/LanguageContext';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 const Activities = () => {
     const { t } = useTranslation();
@@ -14,6 +15,8 @@ const Activities = () => {
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [sortBy, setSortBy] = useState('rating');
+    const { translatedText: translatedTitle } = useDynamicTranslation(t('activites'));
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [minRating, setMinRating] = useState(0);
     const [page, setPage] = useState(1);
@@ -66,7 +69,7 @@ const Activities = () => {
                         className="relative text-center px-4"
                     >
                         <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-4">
-                            Epic <span className="text-zentoura-yellow">{t('common.activities')}</span>
+                            Epic <span className="text-zentoura-yellow">{translatedTitle}</span>
                         </h1>
                         <p className="text-zentoura-lavender text-lg max-w-2xl mx-auto">
                             {t('homepage.activitiesDesc')}
@@ -82,7 +85,7 @@ const Activities = () => {
                             <FiSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-zentoura-deep/30 group-focus-within:text-zentoura-primary transition-colors" />
                             <input
                                 type="text"
-                                placeholder={t('common.searchActivities') || 'Explore activities...'}
+                                placeholder={t('common.searchActivites') || 'Explore activities...'}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="w-full pl-14 pr-6 py-4 bg-white/50 dark:bg-gray-700/50 rounded-2xl border-none focus:ring-4 focus:ring-zentoura-primary/10 transition-all text-zentoura-deepest dark:text-white font-bold placeholder:text-zentoura-deep/20"
@@ -148,7 +151,7 @@ const Activities = () => {
                                     <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto text-gray-400">
                                         <FiActivity className="w-12 h-12 text-zentoura-deep/20 mx-auto mb-4" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-zentoura-deepest">{t('common.noActivities')}</h3>
+                                    <h3 className="text-xl font-bold text-zentoura-deepest">{t('common.noActivites')}</h3>
                                     <p className="text-zentoura-deep/60">{t('common.tryAdjustingFilters') || 'Try adjusting your filters.'}</p>
                                     <button
                                         onClick={() => { setSearch(''); setSelectedCategory('All'); setMinRating(0); }}

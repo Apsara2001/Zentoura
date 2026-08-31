@@ -26,10 +26,10 @@ const BlogDetails = () => {
     const [showComments, setShowComments] = useState(false);
     const { t } = useTranslation();
 
-    // Backend handles translation now
-    const title = blog?.title;
-    const content = blog?.content;
-    const category = blog?.category;
+    // Dynamic translation for blog content
+    const { translatedText: title } = useDynamicTranslation(blog?.title);
+    const { translatedText: content } = useDynamicTranslation(blog?.content);
+    const { translatedText: category } = useDynamicTranslation(blog?.category);
 
     useEffect(() => {
         window.scrollTo(0, 0);

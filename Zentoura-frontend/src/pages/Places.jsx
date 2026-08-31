@@ -5,6 +5,7 @@ import { FiStar, FiMapPin } from 'react-icons/fi';
 import axios, { IMAGE_BASE_URL } from '../api/axios';
 import { SkeletonList } from '../components/Loader';
 import { useTranslation } from 'react-i18next';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 
 import { useLanguage } from '../context/LanguageContext';
@@ -12,6 +13,7 @@ import { useLanguage } from '../context/LanguageContext';
 const Places = () => {
     const { t } = useTranslation();
     const { language } = useLanguage();
+    const { translatedText: translatedTitle } = useDynamicTranslation(t('amazingPlaces'));
     const [places, setPlaces] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortBy, setSortBy] = useState('rating'); // 'rating' or 'newest'
@@ -48,7 +50,7 @@ const Places = () => {
             <div className="section-container">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                     <h1 className="text-5xl font-bold text-center mb-12">
-                        {t('common.amazing') || 'Amazing'} <span className="gradient-text">{t('common.places')}</span>
+                        <span className="gradient-text">{translatedTitle}</span>
                     </h1>
 
                     {/* Sort Filter */}
@@ -78,10 +80,10 @@ const Places = () => {
 
 // Extracted PlaceCard for cleaner code and specialized translation hooks per item
 const PlaceCard = ({ place, t }) => {
-    // Backend handles translation now
-    const translatedName = place.name;
-    const translatedLocation = place.location;
-    const translatedShortDesc = place.short_description;
+    // Dynamic translation for place content
+    const { translatedText: translatedName } = useDynamicTranslation(place.name);
+    const { translatedText: translatedLocation } = useDynamicTranslation(place.location);
+    const { translatedText: translatedShortDesc } = useDynamicTranslation(place.short_description);
 
     return (
         <motion.div

@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 
 import ActivityBookingModal from '../components/ActivityBookingModal';
@@ -25,13 +26,13 @@ const ActivityDetails = () => {
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
     const { t, i18n } = useTranslation();
 
-    // Backend handles translation now
-    const name = activity?.name;
-    const shortDesc = activity?.short_description;
-    const fullDesc = activity?.full_description || activity?.description;
-    const location = activity?.location;
-    const category = activity?.category;
-    const difficulty = activity?.difficulty_level;
+    // Dynamic translation for activity content
+    const { translatedText: name } = useDynamicTranslation(activity?.name);
+    const { translatedText: shortDesc } = useDynamicTranslation(activity?.short_description);
+    const { translatedText: fullDesc } = useDynamicTranslation(activity?.full_description || activity?.description);
+    const { translatedText: location } = useDynamicTranslation(activity?.location);
+    const { translatedText: category } = useDynamicTranslation(activity?.category);
+    const { translatedText: difficulty } = useDynamicTranslation(activity?.difficulty_level);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -396,7 +397,7 @@ const ActivityDetails = () => {
                             ) : (
                                 <div className="aspect-square bg-gray-50 dark:bg-gray-800 flex flex-col items-center justify-center text-center p-8 gap-4 opacity-50">
                                     <div className="w-12 h-12 rounded-full border-2 border-dashed border-gray-400 animate-spin" />
-                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Map data being plotted...</p>
+                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('common.mapLoading')}</p>
                                 </div>
                             )}
                         </div>

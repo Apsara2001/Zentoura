@@ -62,7 +62,7 @@ const Home = () => {
                             cta: t('homepage.hotelsCta')
                         },
                         {
-                            title: t('common.popularActivities'),
+                            title: t('common.popularActivites'),
                             desc: t('homepage.activitiesDesc'),
                             image: 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=1200',
                             path: '/activities',

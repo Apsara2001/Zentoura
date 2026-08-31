@@ -28,7 +28,12 @@ const HotelDetails = () => {
         checkIn: today,
         checkOut: tomorrow,
         guests: 1,
-        numRooms: 1
+        numRooms: 1,
+        paymentMethod: 'credit',
+        cardType: 'visa',
+        cardNumber: '',
+        expiryDate: '',
+        cvc: ''
     });
 
     const [showReviews, setShowReviews] = useState(false);
@@ -36,7 +41,7 @@ const HotelDetails = () => {
     // Backend handles translation now
     const name = hotel?.name;
     const location = hotel?.location;
-    const description = hotel?.description;
+    const { translatedText: description } = useDynamicTranslation(hotel?.description);
 
     const calculateNights = () => {
         if (!bookingData.checkIn || !bookingData.checkOut) return 0;
@@ -140,13 +145,23 @@ const HotelDetails = () => {
 
             const totalPrice = nights * selectedRoom.pricePerNight;
 
+            toast.info("Working right now...", {
+                position: "top-center",
+                autoClose: 2000,
+            });
+
             await axios.post('/bookings', {
                 hotelId: parseInt(id),
                 roomId: selectedRoom.id,
                 checkIn: bookingData.checkIn,
                 checkOut: bookingData.checkOut,
                 guests: parseInt(bookingData.guests),
-                numRooms: parseInt(bookingData.numRooms)
+                numRooms: parseInt(bookingData.numRooms),
+                paymentMethod: bookingData.paymentMethod,
+                cardType: bookingData.cardType,
+                cardNumber: bookingData.cardNumber,
+                expiryDate: bookingData.expiryDate,
+                cvc: bookingData.cvc
             });
 
             toast.success(t('common.bookingConfirmed'), {
@@ -417,7 +432,7 @@ const HotelDetails = () => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative"
+                            className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
                         >
                             <button
                                 onClick={() => setShowBookingModal(false)}
@@ -523,6 +538,70 @@ const HotelDetails = () => {
                                                 <option value="1">1 Room</option>
                                             )}
                                         </select>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Payment Method</label>
+                                        <select
+                                            value={bookingData.paymentMethod}
+                                            onChange={(e) => setBookingData({ ...bookingData, paymentMethod: e.target.value })}
+                                            className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-zentoura-primary"
+                                        >
+                                            <option value="credit">Credit Card</option>
+                                            <option value="debit">Debit Card</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Card Type</label>
+                                        <select
+                                            value={bookingData.cardType}
+                                            onChange={(e) => setBookingData({ ...bookingData, cardType: e.target.value })}
+                                            className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-zentoura-primary"
+                                        >
+                                            <option value="visa">Visa</option>
+                                            <option value="master">Master Card</option>
+                                            <option value="Amex">Amex</option>
+                                            <option value="LankaPay">LankaPay</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Card Number</label>
+                                        <input
+                                            type="text"
+                                            placeholder="0000 0000 0000 0000"
+                                            value={bookingData.cardNumber}
+                                            onChange={(e) => setBookingData({ ...bookingData, cardNumber: e.target.value })}
+                                            className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-zentoura-primary"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Expiry Date</label>
+                                            <input
+                                                type="text"
+                                                placeholder="MM/YY"
+                                                value={bookingData.expiryDate}
+                                                onChange={(e) => setBookingData({ ...bookingData, expiryDate: e.target.value })}
+                                                className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-zentoura-primary"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase text-gray-500 mb-1">CVC</label>
+                                            <input
+                                                type="text"
+                                                placeholder="123"
+                                                value={bookingData.cvc}
+                                                onChange={(e) => setBookingData({ ...bookingData, cvc: e.target.value })}
+                                                className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-zentoura-primary"
+                                                required
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 

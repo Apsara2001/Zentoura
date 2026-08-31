@@ -5,8 +5,10 @@ import axios from '../api/axios';
 import Loader from '../components/Loader';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const CustomerDashboard = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [bookings, setBookings] = useState([]);
     const [stats, setStats] = useState({
@@ -51,16 +53,16 @@ const CustomerDashboard = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
                         <h1 className="text-3xl md:text-4xl font-display font-bold text-zentoura-deepest">
-                            Welcome back, {user?.name.split(' ')[0]}!
+                            {t('dashboard.welcomeBack')}, {user?.name.split(' ')[0]}!
                         </h1>
-                        <p className="text-gray-500 mt-2">Manage your travels and explore new horizons.</p>
+                        <p className="text-gray-500 mt-2">{t('dashboard.manageTravels')}</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <Link
                             to="/hotels"
                             className="px-6 py-3 bg-zentoura-deep text-white font-bold rounded-xl hover:bg-zentoura-deepest transition-all shadow-lg shadow-zentoura-deep/20"
                         >
-                            Find New Stays
+                            {t('dashboard.findNewStays')}
                         </Link>
                     </div>
                 </div>
@@ -73,8 +75,8 @@ const CustomerDashboard = () => {
                                 <FiCalendar className="w-6 h-6" />
                             </div>
                             <div>
-                                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">Upcoming</span>
-                                <h3 className="text-2xl font-bold text-zentoura-deepest">{stats.upcoming} Bookings</h3>
+                                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">{t('dashboard.upcoming')}</span>
+                                <h3 className="text-2xl font-bold text-zentoura-deepest">{stats.upcoming} {t('common.bookings')}</h3>
                             </div>
                         </div>
                     </div>
@@ -84,7 +86,7 @@ const CustomerDashboard = () => {
                                 <FiCreditCard className="w-6 h-6" />
                             </div>
                             <div>
-                                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">Total Spent</span>
+                                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">{t('dashboard.totalSpent')}</span>
                                 <h3 className="text-2xl font-bold text-zentoura-deepest">Rs. {stats.spent}</h3>
                             </div>
                         </div>
@@ -95,8 +97,8 @@ const CustomerDashboard = () => {
                                 <FiClock className="w-6 h-6" />
                             </div>
                             <div>
-                                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">History</span>
-                                <h3 className="text-2xl font-bold text-zentoura-deepest">{stats.totalBookings} Total</h3>
+                                <span className="text-sm text-gray-400 font-bold uppercase tracking-wider">{t('dashboard.history')}</span>
+                                <h3 className="text-2xl font-bold text-zentoura-deepest">{stats.totalBookings} {t('common.total')}</h3>
                             </div>
                         </div>
                     </div>
@@ -105,9 +107,9 @@ const CustomerDashboard = () => {
                 {/* Recent Activity */}
                 <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 mb-12">
                     <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-bold text-zentoura-deepest">Recent Bookings</h2>
+                        <h2 className="text-2xl font-bold text-zentoura-deepest">{t('dashboard.recentBookings')}</h2>
                         <Link to="/my-bookings" className="text-zentoura-primary font-bold flex items-center gap-1 hover:underline">
-                            View All <FiChevronRight />
+                            {t('dashboard.viewAll')} <FiChevronRight />
                         </Link>
                     </div>
 
@@ -135,7 +137,9 @@ const CustomerDashboard = () => {
                             ))
                         ) : (
                             <div className="text-center py-10">
-                                <p className="text-gray-400 italic">No bookings found. Start your first journey!</p>
+                                <div className="text-center py-10">
+                                    <p className="text-gray-400 italic">{t('dashboard.noBookings')}</p>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -147,8 +151,8 @@ const CustomerDashboard = () => {
                         <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
                             <FiUser className="w-6 h-6" />
                         </div>
-                        <h3 className="text-2xl font-bold mb-2">Personal Information</h3>
-                        <p className="text-white/70 mb-8">Update your contact details and preferences to get personalized recommendations.</p>
+                        <h3 className="text-2xl font-bold mb-2">{t('dashboard.personalInfo')}</h3>
+                        <p className="text-white/70 mb-8">{t('dashboard.updateInfo')}</p>
                         <div className="space-y-4 mb-8">
                             <div className="flex items-center gap-3">
                                 <span className="w-2 h-2 bg-zentoura-yellow rounded-full"></span>
@@ -156,14 +160,14 @@ const CustomerDashboard = () => {
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="w-2 h-2 bg-zentoura-yellow rounded-full"></span>
-                                <span className="text-sm text-white/90">Customer since {new Date(user?.createdAt).getFullYear()}</span>
+                                <span className="text-sm text-white/90">{t('dashboard.customerSince')} {new Date(user?.createdAt).getFullYear()}</span>
                             </div>
                         </div>
                         <Link
                             to="/profile"
                             className="inline-block px-6 py-3 bg-white text-zentoura-deepest font-bold rounded-xl hover:bg-gray-100 transition-colors"
                         >
-                            Manage Profile
+                            {t('dashboard.manageProfile')}
                         </Link>
                     </div>
 
@@ -172,12 +176,12 @@ const CustomerDashboard = () => {
                             <div className="w-12 h-12 bg-zentoura-yellow/10 text-zentoura-yellow rounded-2xl flex items-center justify-center mb-6">
                                 <FiMapPin className="w-6 h-6 font-bold" />
                             </div>
-                            <h3 className="text-2xl font-bold text-zentoura-deepest mb-2">Explore More</h3>
-                            <p className="text-gray-500 leading-relaxed">Discover hidden gems and popular destinations curated just for you based on your booking history.</p>
+                            <h3 className="text-2xl font-bold text-zentoura-deepest mb-2">{t('dashboard.exploreMoreTitle')}</h3>
+                            <p className="text-gray-500 leading-relaxed">{t('dashboard.exploreMoreDesc')}</p>
                         </div>
                         <div className="mt-8 flex gap-3">
-                            <Link to="/places" className="flex-1 py-3 text-center bg-gray-50 text-gray-700 font-bold rounded-xl hover:bg-gray-100 transition-colors">Destinations</Link>
-                            <Link to="/activities" className="flex-1 py-3 text-center bg-gray-50 text-gray-700 font-bold rounded-xl hover:bg-gray-100 transition-colors">Activities</Link>
+                            <Link to="/places" className="flex-1 py-3 text-center bg-gray-50 text-gray-700 font-bold rounded-xl hover:bg-gray-100 transition-colors">{t('dashboard.destinations')}</Link>
+                            <Link to="/activities" className="flex-1 py-3 text-center bg-gray-50 text-gray-700 font-bold rounded-xl hover:bg-gray-100 transition-colors">{t('activites')}</Link>
                         </div>
                     </div>
                 </div>
