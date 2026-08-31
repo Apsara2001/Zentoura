@@ -8,10 +8,10 @@ import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 const BlogCard = ({ blog }) => {
     const { t } = useTranslation();
 
-    // Backend handles translation now
-    const translatedTitle = blog.title;
-    const translatedShortDesc = blog.shortDescription || blog.content?.substring(0, 150) + '...';
-    const translatedCategory = blog.category || 'General';
+    // Dynamic translation for blog content
+    const { translatedText: translatedTitle } = useDynamicTranslation(blog.title);
+    const { translatedText: translatedShortDesc } = useDynamicTranslation(blog.shortDescription || blog.content?.substring(0, 150) + '...');
+    const { translatedText: translatedCategory } = useDynamicTranslation(blog.category || 'General');
 
     const imageUrl = blog.featuredImage
         ? (blog.featuredImage.startsWith('http') ? blog.featuredImage : `${IMAGE_BASE_URL}/${blog.featuredImage}`)

@@ -3,16 +3,18 @@ import { Link } from 'react-router-dom';
 import { FiMapPin, FiClock, FiStar, FiZap } from 'react-icons/fi';
 import { IMAGE_BASE_URL } from '../api/axios';
 import { useTranslation } from 'react-i18next';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 
 const ActivityCard = ({ activity }) => {
     const { t } = useTranslation();
-    const translatedName = activity.name;
-    const translatedLocation = activity.location;
-    const translatedDescription = activity.short_description || activity.description?.substring(0, 100) + '...';
 
-    const translatedCategory = activity.category;
-    const translatedDifficulty = activity.difficulty_level;
+    // Dynamic translation for activity content
+    const { translatedText: translatedName } = useDynamicTranslation(activity.name);
+    const { translatedText: translatedLocation } = useDynamicTranslation(activity.location);
+    const { translatedText: translatedDescription } = useDynamicTranslation(activity.short_description || activity.description?.substring(0, 100) + '...');
+    const { translatedText: translatedCategory } = useDynamicTranslation(activity.category);
+    const { translatedText: translatedDifficulty } = useDynamicTranslation(activity.difficulty_level);
 
     const imageUrl = activity.image
         ? (activity.image.startsWith('http') ? activity.image : `${IMAGE_BASE_URL}/${activity.image}`)

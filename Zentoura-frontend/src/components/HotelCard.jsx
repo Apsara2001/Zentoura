@@ -8,10 +8,15 @@ import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 const HotelCard = ({ hotel }) => {
     const { t } = useTranslation();
 
-    // Backend handles translation now
+    // Backend handles translation for description
+    const { translatedText: translatedDescription } = useDynamicTranslation(hotel.description);
     const translatedName = hotel.name;
     const translatedLocation = hotel.location;
-    const translatedDescription = hotel.description?.substring(0, 100) + '...';
+
+    // Truncate description for card view
+    const displayDescription = translatedDescription?.length > 100
+        ? translatedDescription.substring(0, 100) + '...'
+        : translatedDescription;
 
     const imageUrl = hotel.image
         ? `${IMAGE_BASE_URL}/${hotel.image}`
@@ -45,7 +50,7 @@ const HotelCard = ({ hotel }) => {
                 </div>
 
                 <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-6 flex-grow">
-                    {translatedDescription}
+                    {displayDescription}
                 </p>
 
                 <div className="flex items-center justify-between mb-6">

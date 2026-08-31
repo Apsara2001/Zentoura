@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { FiFacebook, FiTwitter, FiInstagram, FiMail, FiMapPin, FiPhone } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 const Footer = () => {
     const { t } = useTranslation();
+    const { translatedText: translatedActivities } = useDynamicTranslation(t('activites'));
+    const { translatedText: translatedPlaces } = useDynamicTranslation(t('places'));
     return (
         <footer className="bg-zentoura-dreamy text-zentoura-deepest border-t border-zentoura-deep/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -22,8 +25,8 @@ const Footer = () => {
                         <ul className="space-y-3 text-sm">
                             <li><Link to="/blogs" className="hover:text-zentoura-deep transition-all duration-300 flex items-center group text-zentoura-deepest"><span className="w-0 group-hover:w-2 h-0.5 bg-zentoura-deep mr-0 group-hover:mr-2 transition-all"></span>{t('common.blogs')}</Link></li>
                             <li><Link to="/hotels" className="hover:text-zentoura-deep transition-all duration-300 flex items-center group text-zentoura-deepest"><span className="w-0 group-hover:w-2 h-0.5 bg-zentoura-deep mr-0 group-hover:mr-2 transition-all"></span>{t('common.hotels')}</Link></li>
-                            <li><Link to="/places" className="hover:text-zentoura-deep transition-all duration-300 flex items-center group text-zentoura-deepest"><span className="w-0 group-hover:w-2 h-0.5 bg-zentoura-deep mr-0 group-hover:mr-2 transition-all"></span>{t('common.places')}</Link></li>
-                            <li><Link to="/activities" className="hover:text-zentoura-deep transition-all duration-300 flex items-center group text-zentoura-deepest"><span className="w-0 group-hover:w-2 h-0.5 bg-zentoura-deep mr-0 group-hover:mr-2 transition-all"></span>{t('common.activities')}</Link></li>
+                            <li><Link to="/places" className="hover:text-zentoura-deep transition-all duration-300 flex items-center group text-zentoura-deepest"><span className="w-0 group-hover:w-2 h-0.5 bg-zentoura-deep mr-0 group-hover:mr-2 transition-all"></span>{translatedPlaces}</Link></li>
+                            <li><Link to="/activities" className="hover:text-zentoura-deep transition-all duration-300 flex items-center group text-zentoura-deepest"><span className="w-0 group-hover:w-2 h-0.5 bg-zentoura-deep mr-0 group-hover:mr-2 transition-all"></span>{translatedActivities}</Link></li>
                         </ul>
                     </div>
 

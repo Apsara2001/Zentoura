@@ -5,6 +5,7 @@ import { FiMenu, FiX, FiSun, FiMoon, FiSearch, FiUser, FiLogOut, FiGlobe } from 
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTranslation } from 'react-i18next';
+import { useDynamicTranslation } from '../hooks/useDynamicTranslation';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +19,10 @@ const Navbar = () => {
     const { language, changeLanguage, languages } = useLanguage();
     const { t } = useTranslation();
     const navigate = useNavigate();
+
+    // Use dynamic translation for navigation links if requested
+    const { translatedText: translatedActivities } = useDynamicTranslation(t('activites'));
+    const { translatedText: translatedPlaces } = useDynamicTranslation(t('places'));
 
     // Close dropdowns on outside click
     useEffect(() => {
@@ -87,8 +92,8 @@ const Navbar = () => {
                         <Link to="/" className="nav-link">{t('common.home')}</Link>
                         <Link to="/blogs" className="nav-link">{t('common.blogs')}</Link>
                         <Link to="/hotels" className="nav-link">{t('common.hotels')}</Link>
-                        <Link to="/places" className="nav-link">{t('common.places')}</Link>
-                        <Link to="/activities" className="nav-link">{t('common.activities')}</Link>
+                        <Link to="/places" className="nav-link">{translatedPlaces}</Link>
+                        <Link to="/activities" className="nav-link">{translatedActivities}</Link>
                         <Link to="/about" className="nav-link">{t('common.about')}</Link>
                         <Link to="/contact" className="nav-link">{t('common.contact')}</Link>
                     </div>
@@ -236,8 +241,8 @@ const Navbar = () => {
                         <Link to="/" className="block py-2 hover:text-primary-500">{t('common.home')}</Link>
                         <Link to="/blogs" className="block py-2 hover:text-primary-500">{t('common.blogs')}</Link>
                         <Link to="/hotels" className="block py-2 hover:text-primary-500">{t('common.hotels')}</Link>
-                        <Link to="/places" className="block py-2 hover:text-primary-500">{t('common.places')}</Link>
-                        <Link to="/activities" className="block py-2 hover:text-primary-500">{t('common.activities')}</Link>
+                        <Link to="/places" className="block py-2 hover:text-primary-500">{translatedPlaces}</Link>
+                        <Link to="/activities" className="block py-2 hover:text-primary-500">{translatedActivities}</Link>
                         <Link to="/about" className="block py-2 hover:text-primary-500">{t('common.about')}</Link>
                         <Link to="/contact" className="block py-2 hover:text-primary-500">{t('common.contact')}</Link>
 

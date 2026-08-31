@@ -21,7 +21,12 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({
         defaultValues: {
             guests: 1,
-            bookingDate: ''
+            bookingDate: '',
+            paymentMethod: 'credit',
+            cardType: 'visa',
+            cardNumber: '',
+            expiryDate: '',
+            cvc: ''
         }
     });
 
@@ -49,10 +54,20 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
 
         try {
             setIsSubmitting(true);
+            toast.info("Working right now...", {
+                position: "top-center",
+                autoClose: 2000,
+            });
+
             await axios.post('/activity-bookings', {
                 activityId: activity.id,
                 bookingDate: data.bookingDate,
-                guests: parseInt(data.guests)
+                guests: parseInt(data.guests),
+                paymentMethod: data.paymentMethod,
+                cardType: data.cardType,
+                cardNumber: data.cardNumber,
+                expiryDate: data.expiryDate,
+                cvc: data.cvc
             });
 
             toast.success(t('common.bookingConfirmed') || 'Booking confirmed! Get ready for adventure!');
@@ -60,7 +75,7 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
             // TODO: Navigate to success page or bookings page
         } catch (error) {
             console.error('Booking error:', error);
-            toast.error(error.response?.data?.message || 'Failed to book activity');
+            toast.error(error.response?.data?.message || t('common.failedToBookActivity'));
         } finally {
             setIsSubmitting(false);
         }
@@ -83,7 +98,7 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-white dark:border-gray-800"
+                    className="relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-white dark:border-gray-800 max-h-[90vh] overflow-y-auto"
                 >
                     {/* Header */}
                     <div className="relative h-32 bg-zentoura-primary overflow-hidden">
@@ -116,7 +131,7 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
                                     <input
                                         type="date"
                                         min={new Date().toISOString().split('T')[0]} // Allow today? Or tomorrow? Using today for now.
-                                        {...register('bookingDate', { required: 'Please select a date' })}
+                                        {...register('bookingDate', { required: t('common.pleaseSelectDate') })}
                                         className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
                                     />
                                     {errors.bookingDate && <p className="text-red-500 text-sm font-bold">{errors.bookingDate.message}</p>}
@@ -132,8 +147,8 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
                                             type="number"
                                             min="1"
                                             {...register('guests', {
-                                                required: 'At least 1 guest required',
-                                                min: { value: 1, message: 'Minimum 1 explorer' }
+                                                required: t('common.atLeastOneGuest'),
+                                                min: { value: 1, message: t('common.minimumOneExplorer') }
                                             })}
                                             className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
                                         />
@@ -142,6 +157,74 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
                                         </div>
                                     </div>
                                     {errors.guests && <p className="text-red-500 text-sm font-bold">{errors.guests.message}</p>}
+                                </div>
+
+                                {/* Payment Method Selection */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-gray-500">
+                                            Payment Method
+                                        </label>
+                                        <select
+                                            {...register('paymentMethod')}
+                                            className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
+                                        >
+                                            <option value="credit">Credit Card</option>
+                                            <option value="debit">Debit Card</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-gray-500">
+                                            Card Type
+                                        </label>
+                                        <select
+                                            {...register('cardType')}
+                                            className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
+                                        >
+                                            <option value="visa">Visa</option>
+                                            <option value="master">Master Card</option>
+                                            <option value="Amex">Amex</option>
+                                            <option value="LankaPay">LankaPay</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-gray-500">
+                                            Card Number
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="0000 0000 0000 0000"
+                                            {...register('cardNumber', { required: true })}
+                                            className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-gray-500">
+                                                Expiry Date
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="MM/YY"
+                                                {...register('expiryDate', { required: true })}
+                                                className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-gray-500">
+                                                CVC
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="123"
+                                                {...register('cvc', { required: true })}
+                                                className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-zentoura-primary outline-none font-bold text-gray-700 dark:text-gray-200"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Total Price */}
@@ -169,8 +252,8 @@ const ActivityBookingModal = ({ activity, isOpen, onClose }) => {
                         </form>
                     </div>
                 </motion.div>
-            </div>
-        </AnimatePresence>
+            </div >
+        </AnimatePresence >
     );
 };
 
